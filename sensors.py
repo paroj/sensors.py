@@ -1,6 +1,6 @@
 # Author: Pavel Rojtberg <http://www.rojtberg.net>
-# License: LGPL2 (same as libsensors)
-# Web: 
+# License: LGPLv2 (same as libsensors)
+# Web: https://github.com/paroj/sensors.py
 """
 sensors.py: Python Bindings for libsensors3
 
@@ -117,6 +117,12 @@ def get_features(chip, nr):
     feature = feature.contents if bool(feature) else None
     return feature, _nr.value
 
+def get_label(chip, feature):
+    ptr = _hdl.sensors_get_label(byref(chip), byref(feature)) 
+    val = cast(ptr, c_char_p).value.decode("utf-8")
+    _libc.free(ptr)
+    return val
+
 def get_all_subfeatures(chip, feature, nr):
     """
     @return: subfeature, next nr to query
@@ -125,12 +131,6 @@ def get_all_subfeatures(chip, feature, nr):
     subfeature = _hdl.sensors_get_all_subfeatures(byref(chip), byref(feature), byref(_nr))
     subfeature = subfeature.contents if bool(subfeature) else None
     return subfeature, _nr.value
-
-def get_label(chip, feature):
-    ptr = _hdl.sensors_get_label(byref(chip), byref(feature)) 
-    val = cast(ptr, c_char_p).value.decode("utf-8")
-    _libc.free(ptr)
-    return val
 
 def get_value(chip, subfeature_nr):
     val = c_double()
