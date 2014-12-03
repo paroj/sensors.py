@@ -1,11 +1,13 @@
-# Author: Pavel Rojtberg <http://www.rojtberg.net>
-# License: LGPLv2 (same as libsensors)
-# Web: https://github.com/paroj/sensors.py
 """
-sensors.py: Python Bindings for libsensors3
+@package sensors.py
+Python Bindings for libsensors3
 
 use the documentation of libsensors for the low level API.
 see example.py for high level API usage.
+
+@author: Pavel Rojtberg (http://www.rojtberg.net)
+@see: https://github.com/paroj/sensors.py
+@copyright: LGPLv2 (same as libsensors)
 """
 
 from ctypes import *
@@ -80,7 +82,7 @@ def parse_chip_name(orig_name):
 
 def get_detected_chips(match, nr):
     """
-    @return: opaque chip handle, next nr to query
+    @return: (chip, next nr to query)
     """
     _nr = c_int(nr)
     
@@ -91,16 +93,19 @@ def get_detected_chips(match, nr):
     chip = chip.contents if bool(chip) else None
     return chip, _nr.value
 
-def chip_snprintf_name(chip):
-    ret = create_string_buffer(200) # same size as in sensors utility
-    if _hdl.sensors_snprintf_chip_name(ret, 200, byref(chip)) < 0:
+def chip_snprintf_name(chip, buffer_size=200):
+    """
+    @param buffer_size defaults to the size used in the sensors utility
+    """
+    ret = create_string_buffer(buffer_size)
+    if _hdl.sensors_snprintf_chip_name(ret, buffer_size, byref(chip)) < 0:
         raise Exception("sensors_snprintf_chip_name failed")
         
     return ret.value.decode("utf-8")
 
 def do_chip_sets(chip):
     """
-    ATTENTION: untested!
+    @attention this function was not tested
     """
     if _hdl.sensors_do_chip_sets(byref(chip)) < 0:
         raise Exception("sensors_do_chip_sets failed")
@@ -110,7 +115,7 @@ def get_adapter_name(bus):
 
 def get_features(chip, nr):
     """
-    @return: feature, next nr to query
+    @return: (feature, next nr to query)
     """
     _nr = c_int(nr)
     feature = _hdl.sensors_get_features(byref(chip), byref(_nr))
@@ -125,7 +130,7 @@ def get_label(chip, feature):
 
 def get_all_subfeatures(chip, feature, nr):
     """
-    @return: subfeature, next nr to query
+    @return: (subfeature, next nr to query)
     """
     _nr = c_int(nr)
     subfeature = _hdl.sensors_get_all_subfeatures(byref(chip), byref(feature), byref(_nr))
@@ -140,7 +145,7 @@ def get_value(chip, subfeature_nr):
 
 def set_value(chip, subfeature_nr, value):
     """
-    ATTENTION: untested!
+    @attention this function was not tested
     """
     val = c_double(value)
     if _hdl.sensors_set_value(byref(chip), subfeature_nr, byref(val)) < 0:

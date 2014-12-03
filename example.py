@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-# Author: Pavel Rojtberg <http://www.rojtberg.net>
-# License: LGPLv2 (same as libsensors)
-# Web: https://github.com/paroj/sensors.py
+"""
+@author: Pavel Rojtberg (http://www.rojtberg.net)
+@see: https://github.com/paroj/sensors.py
+@copyright: LGPLv2 (same as libsensors)
+"""
 
 import sensors
 
