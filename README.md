@@ -23,7 +23,7 @@ As Python does not support call by reference for primitive types some of the lib
 Iterate over all chips using the low level API:
 ```python
 nr = 0
-feature, nr = get_features(None, nr) # nr gets changed by the C API
+feature, nr = get_detected_chips(None, nr) # nr gets changed by the C API
 ```
 
 Missing Features (pull requests are welcome):
