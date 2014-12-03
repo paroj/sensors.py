@@ -66,10 +66,13 @@ MODE_W = 2
 COMPUTE_MAPPING = 4
 
 def init(cfg_file = None):
-    file = _libc.fopen(cfg_file) if cfg_file is not None else None 
+    file = _libc.fopen(cfg_file.encode("utf-8"), "r") if cfg_file is not None else None 
     
     if _hdl.sensors_init(file) != 0:
         raise Exception("sensors_init failed")
+    
+    if file is not None:
+        _libc.fclose(file)
 
 def cleanup():
     _hdl.sensors_cleanup()
