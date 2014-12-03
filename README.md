@@ -18,14 +18,17 @@ LGPLv2 (same as libsensors3)
 
 Usage Notes
 -----------
-As Python does not support call by reference for primitive types some of the libsensors API had to be adapted.
+As Python does not support call by reference for primitive types some of the libsensors API had to be adapted:
 
-Iterate over all chips using the low level API:
 ```python
-nr = 0
-chip_name, nr = get_detected_chips(None, nr) # nr gets changed by the C API
+# nr is changed by refrence in the C API
+chip_name, nr = sensors.get_detected_chips(None, nr)
+
+# returns the value. throws on error
+val = get_value(chip, subfeature_nr)
 ```
 
 Missing Features (pull requests are welcome):
-* `sensors_get_subfeature` wrapper
 * `sensors_subfeature_type` enum
+* `sensors_get_subfeature`
+* everything from `sensors/error.h`
