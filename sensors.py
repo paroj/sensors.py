@@ -59,6 +59,7 @@ _hdl.sensors_get_features.restype = POINTER(feature)
 _hdl.sensors_get_all_subfeatures.restype = POINTER(subfeature)
 _hdl.sensors_get_label.restype = c_void_p # return pointer instead of str so we can free it
 _hdl.sensors_get_adapter_name.restype = c_char_p # docs do not say whether to free this or not 
+_hdl.sensors_strerror.restype = c_char_p
 
 ### RAW API ###
 MODE_R = 1
@@ -78,10 +79,16 @@ def cleanup():
     _hdl.sensors_cleanup()
 
 def parse_chip_name(orig_name):
-    res = chip_name()
-    if _hdl.sensors_parse_chip_name(orig_name.encode("utf-8"), byref(res)) < 0:
-        raise Exception("parse_chip_name('{}') failed".format(orig_name))
-    return res
+    ret = chip_name()
+    err= _hdl.sensors_parse_chip_name(orig_name.encode("utf-8"), byref(ret))
+    
+    if err < 0:
+        raise Exception(strerror(err))
+    
+    return ret
+
+def strerror(errnum):
+    return _hdl.sensors_strerror(errnum).decode("utf-8")
 
 def free_chip_name(chip):
     _hdl.sensors_free_chip_name(byref(chip))
@@ -104,8 +111,10 @@ def chip_snprintf_name(chip, buffer_size=200):
     @param buffer_size defaults to the size used in the sensors utility
     """
     ret = create_string_buffer(buffer_size)
-    if _hdl.sensors_snprintf_chip_name(ret, buffer_size, byref(chip)) < 0:
-        raise Exception("sensors_snprintf_chip_name failed")
+    err = _hdl.sensors_snprintf_chip_name(ret, buffer_size, byref(chip))
+    
+    if err < 0:
+        raise Exception(strerror(err))
         
     return ret.value.decode("utf-8")
 
@@ -113,8 +122,9 @@ def do_chip_sets(chip):
     """
     @attention this function was not tested
     """
-    if _hdl.sensors_do_chip_sets(byref(chip)) < 0:
-        raise Exception("sensors_do_chip_sets failed")
+    err = _hdl.sensors_do_chip_sets(byref(chip))
+    if err < 0:
+        raise Exception(strerror(err))
     
 def get_adapter_name(bus):
     return _hdl.sensors_get_adapter_name(byref(bus)).decode("utf-8")
@@ -145,8 +155,9 @@ def get_all_subfeatures(chip, feature, nr):
 
 def get_value(chip, subfeature_nr):
     val = c_double()
-    if _hdl.sensors_get_value(byref(chip), subfeature_nr, byref(val)) < 0:
-        raise Exception("sensors_get_value({}, {}) failed".format(chip, subfeature_nr))
+    err = _hdl.sensors_get_value(byref(chip), subfeature_nr, byref(val))
+    if err < 0:
+        raise Exception(strerror(err))
     return val.value
 
 def set_value(chip, subfeature_nr, value):
@@ -154,8 +165,9 @@ def set_value(chip, subfeature_nr, value):
     @attention this function was not tested
     """
     val = c_double(value)
-    if _hdl.sensors_set_value(byref(chip), subfeature_nr, byref(val)) < 0:
-        raise Exception("sensors_set_value({}, {}, {}) failed".format(chip, subfeature_nr, value))
+    err = _hdl.sensors_set_value(byref(chip), subfeature_nr, byref(val))
+    if err < 0:
+        raise Exception(strerror(err))
 
 ### Convenience API ###
 class ChipIterator:

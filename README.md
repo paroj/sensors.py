@@ -31,4 +31,4 @@ val = get_value(chip, subfeature_nr)
 Missing Features (pull requests are welcome):
 * `sensors_subfeature_type` enum
 * `sensors_get_subfeature`
-* everything from `sensors/error.h`
+* Error handlers
