@@ -83,6 +83,9 @@ def parse_chip_name(orig_name):
         raise Exception("parse_chip_name('{}') failed".format(orig_name))
     return res
 
+def free_chip_name(chip):
+    _hdl.sensors_free_chip_name(byref(chip))
+
 def get_detected_chips(match, nr):
     """
     @return: (chip, next nr to query)
@@ -170,6 +173,10 @@ class ChipIterator:
             raise StopIteration
         
         return chip
+    
+    def __del__(self):
+        if self.match is not None:
+            free_chip_name(self.match)
     
     def next(self): # python2 compability
         return self.__next__()
