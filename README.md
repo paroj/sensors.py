@@ -25,7 +25,7 @@ As Python does not support call by reference for primitive types some of the lib
 chip_name, nr = sensors.get_detected_chips(None, nr)
 
 # returns the value. throws on error
-val = get_value(chip, subfeature_nr)
+val = sensors.get_value(chip, subfeature_nr)
 ```
 
 Missing Features (pull requests are welcome):

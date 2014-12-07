@@ -21,7 +21,7 @@ def print_feature(chip, feature):
         print("\t"+label+"\t"+status)
         return
     
-    names = [sf.name.decode("utf-8")[skipname:] for sf in sfs]
+    names = [sf.name[skipname:].decode("utf-8") for sf in sfs]
     data = list(zip(names, vals))
     
     str_data = ", ".join([e[0]+": "+str(e[1]) for e in data])
