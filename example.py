@@ -2,7 +2,7 @@
 """
 @author: Pavel Rojtberg (http://www.rojtberg.net)
 @see: https://github.com/paroj/sensors.py
-@copyright: LGPLv2 (same as libsensors)
+@copyright: The MIT License (MIT) <http://opensource.org/licenses/MIT>
 """
 
 import sensors

@@ -7,7 +7,7 @@ see example.py for high level API usage.
 
 @author: Pavel Rojtberg (http://www.rojtberg.net)
 @see: https://github.com/paroj/sensors.py
-@copyright: LGPLv2 (same as libsensors)
+@copyright: LGPLv2 (same as libsensors) <http://opensource.org/licenses/LGPL-2.1>
 """
 
 from ctypes import *
