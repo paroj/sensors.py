@@ -173,9 +173,9 @@ def set_value(chip, subfeature_nr, value):
 class ChipIterator:
     def __init__(self, match = None):
         self.match = parse_chip_name(match) if match is not None else None
-    
-    def __iter__(self):
         self.nr = 0
+            
+    def __iter__(self):
         return self
      
     def __next__(self):
@@ -196,9 +196,9 @@ class ChipIterator:
 class FeatureIterator:
     def __init__(self, chip):
         self.chip = chip
-
-    def __iter__(self):
         self.nr = 0
+        
+    def __iter__(self):
         return self
         
     def __next__(self):
@@ -216,9 +216,9 @@ class SubFeatureIterator:
     def __init__(self, chip, feature):
         self.chip = chip
         self.feature = feature
+        self.nr = 0
     
     def __iter__(self):
-        self.nr = 0
         return self
         
     def __next__(self):
