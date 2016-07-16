@@ -14,6 +14,9 @@ from ctypes import *
 import ctypes.util
 
 _libc = cdll.LoadLibrary(ctypes.util.find_library("c"))
+# see https://github.com/paroj/sensors.py/issues/1
+_libc.free.argtypes = [c_void_p]
+
 _hdl = cdll.LoadLibrary(ctypes.util.find_library("sensors"))
 
 version = c_char_p.in_dll(_hdl, "libsensors_version").value.decode("ascii")
