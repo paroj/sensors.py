@@ -127,7 +127,7 @@ def init(cfg_file = None):
     
     result = _hdl.sensors_init(file)
     if result != 0:
-        raise_sensor_error(reslt, "sensors_init failed")
+        raise_sensor_error(result, "sensors_init failed")
     
     if file is not None:
         _libc.fclose(file)
