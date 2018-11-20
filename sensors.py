@@ -30,31 +30,31 @@ class ErrorWildcards(SensorsError):
 class ErrorNoEntry(SensorsError):
     pass
 
-class ErrorAccessRead(SensorsError, PermissionError):
+class ErrorAccessRead(SensorsError, OSError):
     pass
 
-class ErrorKernel(SensorError, OSError):
+class ErrorKernel(SensorsError, OSError):
     pass
 
-class ErrorDivZero(SensorError, ZeroDivisionError):
+class ErrorDivZero(SensorsError, ZeroDivisionError):
     pass
 
-class ErrorChipName(SensorError):
+class ErrorChipName(SensorsError):
     pass
 
-class ErrorBusName(SensorError):
+class ErrorBusName(SensorsError):
     pass
 
-class ErrorParse(SensorError):
+class ErrorParse(SensorsError):
     pass
 
-class ErrorAccessWrite(SensorError, PermissionError):
+class ErrorAccessWrite(SensorsError, OSError):
     pass
 
-class ErrorIO(SensorError, IOError):
+class ErrorIO(SensorsError, IOError):
     pass
 
-class ErrorRecursion(SensorError):
+class ErrorRecursion(SensorsError):
     pass
 
 _ERR_MAP = {
