@@ -1,5 +1,8 @@
 sensors.py
 ==========
+
+[![Downloads](https://pepy.tech/badge/sensors-py)](https://pepy.tech/project/sensors-py)
+
 python bindings using ctypes for libsensors3 of the [lm-sensors project](https://github.com/lm-sensors/lm-sensors). The code was written against libsensors 3.3.4.  
 
 For documentation of the low level API see [sensors.h](https://github.com/lm-sensors/lm-sensors/blob/master/lib/sensors.h). For an example of the high level API see [example.py](https://github.com/paroj/sensors.py/blob/master/example.py).
