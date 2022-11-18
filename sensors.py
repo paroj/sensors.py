@@ -74,9 +74,6 @@ _ERR_MAP = {
     11: ErrorRecursion
 }
 
-def raise_sensor_error(errno, message=''):
-    raise _ERR_MAP[abs(errno)](message)
-
 class bus_id(Structure):
     _fields_ = [("type", c_short),
                 ("nr", c_short)]
@@ -121,6 +118,17 @@ _hdl.sensors_get_adapter_name.restype = c_char_p # docs do not say whether to fr
 _hdl.sensors_strerror.restype = c_char_p
 _hdl.sensors_init.argtypes = [c_void_p]
 
+def _errcheck(result, func, args):
+    if result < 0:
+        raise _ERR_MAP[abs(result)](strerror(result))
+
+_hdl.sensors_init.errcheck = _errcheck
+_hdl.sensors_parse_chip_name.errcheck = _errcheck
+_hdl.sensors_snprintf_chip_name.errcheck = _errcheck
+_hdl.sensors_do_chip_sets.errcheck = _errcheck
+_hdl.sensors_get_value.errcheck = _errcheck
+_hdl.sensors_set_value.errcheck = _errcheck
+
 ### RAW API ###
 MODE_R = 1
 MODE_W = 2
@@ -129,9 +137,7 @@ COMPUTE_MAPPING = 4
 def init(cfg_file = None):
     file = _libc.fopen(cfg_file.encode("utf-8"), "r") if cfg_file is not None else None 
     
-    result = _hdl.sensors_init(file)
-    if result != 0:
-        raise_sensor_error(result, "sensors_init failed")
+    _hdl.sensors_init(file)
     
     if file is not None:
         _libc.fclose(file)
@@ -141,11 +147,7 @@ def cleanup():
 
 def parse_chip_name(orig_name):
     ret = chip_name()
-    err= _hdl.sensors_parse_chip_name(orig_name.encode("utf-8"), byref(ret))
-    
-    if err < 0:
-        raise_sensor_error(err, strerror(err))
-    
+    _hdl.sensors_parse_chip_name(orig_name.encode("utf-8"), byref(ret))    
     return ret
 
 def strerror(errnum):
@@ -172,20 +174,14 @@ def chip_snprintf_name(chip, buffer_size=200):
     @param buffer_size defaults to the size used in the sensors utility
     """
     ret = create_string_buffer(buffer_size)
-    err = _hdl.sensors_snprintf_chip_name(ret, buffer_size, byref(chip))
-    
-    if err < 0:
-        raise_sensor_error(err, strerror(err))
-        
+    _hdl.sensors_snprintf_chip_name(ret, buffer_size, byref(chip))        
     return ret.value.decode("utf-8")
 
 def do_chip_sets(chip):
     """
     @attention this function was not tested
     """
-    err = _hdl.sensors_do_chip_sets(byref(chip))
-    if err < 0:
-        raise_sensor_error(err, strerror(err))
+    _hdl.sensors_do_chip_sets(byref(chip))
     
 def get_adapter_name(bus):
     return _hdl.sensors_get_adapter_name(byref(bus)).decode("utf-8")
@@ -216,9 +212,7 @@ def get_all_subfeatures(chip, feature, nr):
 
 def get_value(chip, subfeature_nr):
     val = c_double()
-    err = _hdl.sensors_get_value(byref(chip), subfeature_nr, byref(val))
-    if err < 0:
-        raise_sensor_error(err, strerror(err))
+    _hdl.sensors_get_value(byref(chip), subfeature_nr, byref(val))
     return val.value
 
 def set_value(chip, subfeature_nr, value):
@@ -226,9 +220,7 @@ def set_value(chip, subfeature_nr, value):
     @attention this function was not tested
     """
     val = c_double(value)
-    err = _hdl.sensors_set_value(byref(chip), subfeature_nr, byref(val))
-    if err < 0:
-        raise_sensor_error(err, strerror(err))
+    _hdl.sensors_set_value(byref(chip), subfeature_nr, byref(val))
 
 ### Convenience API ###
 class ChipIterator:
