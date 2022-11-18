@@ -233,6 +233,7 @@ def set_value(chip, subfeature_nr, value):
 ### Convenience API ###
 class ChipIterator:
     def __init__(self, match = None):
+        self.match = None
         self.match = parse_chip_name(match) if match is not None else None
         self.nr = 0
             
