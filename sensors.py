@@ -17,6 +17,9 @@ _libc = cdll.LoadLibrary(ctypes.util.find_library("c"))
 # see https://github.com/paroj/sensors.py/issues/1
 _libc.free.argtypes = [c_void_p]
 
+_libc.fclose.argtypes = [c_void_p]
+_libc.fopen.restype = c_void_p
+
 _hdl = cdll.LoadLibrary(ctypes.util.find_library("sensors"))
 
 version = c_char_p.in_dll(_hdl, "libsensors_version").value.decode("ascii")
@@ -116,6 +119,7 @@ _hdl.sensors_get_all_subfeatures.restype = POINTER(subfeature)
 _hdl.sensors_get_label.restype = c_void_p # return pointer instead of str so we can free it
 _hdl.sensors_get_adapter_name.restype = c_char_p # docs do not say whether to free this or not 
 _hdl.sensors_strerror.restype = c_char_p
+_hdl.sensors_init.argtypes = [c_void_p]
 
 ### RAW API ###
 MODE_R = 1
